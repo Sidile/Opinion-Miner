@@ -42,7 +42,7 @@
 		(format stream "~S ~%" word))) ;Write hashed value to file
 
 
-(defun random-topics (words)
+(defun random-topics (words lexi-total-sentences)
 	(defvar topics nil)
 	(setf *random-state* (make-random-state t))
 	(defparameter topic1 (make-hash-table))
@@ -69,9 +69,9 @@
 	(push topic4 topics)
 	(push words topics)
 	;;(maphash #'topic-assign-random words)
-	(loop for id in (gethash 2 words)
+	(loop for review in lexi-total-sentences
 		do
-		(loop for x from 0 to (-(topic-word-count (gethash id words))1)
+		(loop for sentence in review
 			do
 			(defparameter chosen-topic (+(random 4)1))
 			(format t "~a ~%" chosen-topic)
@@ -96,7 +96,8 @@
 	(return-from random-topics topics)
 )
 
-(defun first-topics (words topics)
+(defun first-topics (words lexi-total-sentences)
+	(defvar topics (random-topics words lexi-total-sentences))
 	(defvar new-topics nil)
 	(setf *random-state* (make-random-state t))
 	(defparameter topic1 (make-hash-table))
