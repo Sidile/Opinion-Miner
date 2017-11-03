@@ -70,6 +70,7 @@
 			(setf document-negscore new-document (+ document-negscore (topic-word-negscore word)))
 			(incf document-word-count new-document)
 	)
+	(return-from create-document new-document)
 )
 
 (with-open-file (input "reviews2.txt")
@@ -91,6 +92,7 @@
 	;;(write-topic (nth 2 topics) 2)
 	;;(write-topic (nth 3 topics) 3)
 	;;(write-topic (nth 4 topics) 4)
+	(defparameter lexi-total-sentences nil)
 	(loop for line = (read-line input nil) ;Iterates through the file
 		while line do
 		(defparameter *parsed-line* (split-line line))
@@ -110,9 +112,11 @@
 						(collective-topic words *lexi-word*) ;Sends the word to the collective-topic
 						(push (gethash (nth 1 *lexi-word*) words) lexi-sentence)
 						)))
-			(push (create-document words lexi-sentence) lexi-review))) 
+			(push (create-document words lexi-sentence) lexi-review))
+		(push (lexi-review lexi-total-sentences))
+	)
 	(write-topic words "tryatopic.txt") ;Writes the collective-topic to a file
-	(defparameter topics (random-topics words))
+	(defparameter topics (first-topics words lexi-total-sentences))
 	(write-topic (nth 0 topics) 1)
 	(write-topic (nth 1 topics) 2)
 	(write-topic (nth 2 topics) 3)
@@ -121,8 +125,3 @@
 )
 	
 	
-		
-		
-
-
-
